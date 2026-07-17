@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LeadRequest;
+use App\Http\Resources\ErrorResource;
+use App\Http\Resources\LeadCollectionResource;
+use App\Http\Resources\LeadResource;
+use App\Http\Resources\SuccessResource;
 use App\Services\AIService;
 use App\Services\LeadAICommentService;
 use App\Services\LeadService;
@@ -17,7 +21,6 @@ class LeadController extends Controller
     private AIService $aiService;
     private LeadAICommentService $leadAIComment;
 
-
     public function __construct(
         LeadService $leadService,
         AIService $aIService,
@@ -30,7 +33,6 @@ class LeadController extends Controller
 
     /**
      * Создание нового лида
-     * @param LeadRequest $request
      * @return JsonResponse
      */
     public function store(LeadRequest $request): JsonResponse
@@ -42,17 +44,10 @@ class LeadController extends Controller
             $tone = $this->aiService->toneAnalyzer($data['comment']);
             $this->leadAIComment->createComment($lead->id, $tone);
 
-            return response()->json([
-                'success' => true,
+            return (new SuccessResource([
                 'message' => 'Заявка успешно создана',
-                'data' => [
-                    'id' => $lead->id,
-                    'name' => $lead->name,
-                    'phone' => $lead->phone,
-                    'email' => $lead->email,
-                    'created_at' => $lead->created_at->toISOString(),
-                ],
-            ], 201);
+                'data' => new LeadResource($lead),
+            ]))->response()->setStatusCode(201);
 
         } catch (Throwable $e) {
             Log::error('Lead creation error: ' . $e->getMessage(), [
@@ -60,12 +55,42 @@ class LeadController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
 
-            return response()->json([
-                'success' => false,
+            return (new ErrorResource([
                 'message' => 'Произошла ошибка при создании заявки',
                 'error_code' => 'SERVER_ERROR',
                 'debug' => config('app.debug') ? $e->getMessage() : null,
-            ], 500);
+            ]))->response()->setStatusCode(500);
+        }
+    }
+
+    /**
+     * Получение списка всех лидов с ИИ аналитикой
+     * @return JsonResponse
+     */
+    public function index(): JsonResponse
+    {
+        try {
+            $leads = $this->leadService->getAllLeadsWithAnalytics();
+
+            if ($leads->isEmpty()) {
+                $message = 'Лиды не найдены';
+            }
+
+            return (new SuccessResource([
+                'message' => $message ?? 'Список лидов получен успешно',
+                'data' => new LeadCollectionResource($leads),
+            ]))->response()->setStatusCode(200);
+
+        } catch (Throwable $e) {
+            Log::error('Failed to get leads: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return (new ErrorResource([
+                'message' => 'Ошибка получения списка лидов',
+                'error_code' => 'SERVER_ERROR',
+                'debug' => config('app.debug') ? $e->getMessage() : null,
+            ]))->response()->setStatusCode(500);
         }
     }
 }

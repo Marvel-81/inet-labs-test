@@ -6,6 +6,7 @@ use App\Models\Lead;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Throwable;
+use Illuminate\Database\Eloquent\Collection;
 
 class LeadService
 {
@@ -33,5 +34,18 @@ class LeadService
             ]);
             throw $e;
         }
+    }
+
+    /**
+     * Получение списка лидов
+     * @return Collection
+     */
+    public function getAllLeadsWithAnalytics(): Collection
+    {
+        return Lead::with(['aiAnalyses' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }])
+        ->orderBy('created_at', 'desc')
+        ->get();
     }
 }
