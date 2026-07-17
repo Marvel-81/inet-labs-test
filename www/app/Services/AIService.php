@@ -15,12 +15,15 @@ class AIService
     /**
      * Запрос на получение тональности комментария
      * @param string $comment Текст сообщения
-     * @return string Тональность
+     * @return array Тональность/оценка
      */
-    public function toneAnalyzer(string $comment): string
+    public function toneAnalyzer(string $comment): array
     {
         $question = "Проанализируй тональность коментария";
         $tone = $this->ai->ask($question.": \"$comment\"");
-        return $tone ?? "Тональность не проанализирована";
+        return [
+            'parameter' => 'Тональность',
+            'value' => $tone ?? "Тональность не проанализирована"
+            ];
     }
 }

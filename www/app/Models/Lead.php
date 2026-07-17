@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 
 class Lead extends Model
@@ -33,5 +34,13 @@ class Lead extends Model
     public function routeNotificationForMail(): string
     {
         return $this->email;
+    }
+
+    /**
+     * Собирает все расшифровки по данному лиду, сделанные ИИ
+     */
+    public function aiAnalyses(): HasMany
+    {
+        return $this->hasMany(LeadAiAnalysis::class);
     }
 }

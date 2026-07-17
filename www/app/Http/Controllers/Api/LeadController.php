@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LeadRequest;
+use App\Services\AIService;
+use App\Services\LeadAICommentService;
 use App\Services\LeadService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
@@ -11,11 +13,19 @@ use Throwable;
 
 class LeadController extends Controller
 {
-    protected LeadService $leadService;
+    private LeadService $leadService;
+    private AIService $aiService;
+    private LeadAICommentService $leadAIComment;
 
-    public function __construct(LeadService $leadService)
-    {
+
+    public function __construct(
+        LeadService $leadService,
+        AIService $aIService,
+        LeadAICommentService $leadAIComment
+    ) {
         $this->leadService = $leadService;
+        $this->aiService = $aIService;
+        $this->leadAIComment = $leadAIComment;
     }
 
     /**
@@ -26,9 +36,11 @@ class LeadController extends Controller
     public function store(LeadRequest $request): JsonResponse
     {
         try {
-            $validated = $request->validated();
+            $data = $request->validated();
 
-            $lead = $this->leadService->createLead($validated);
+            $lead = $this->leadService->createLead($data);
+            $tone = $this->aiService->toneAnalyzer($data['comment']);
+            $this->leadAIComment->createComment($lead->id, $tone);
 
             return response()->json([
                 'success' => true,
