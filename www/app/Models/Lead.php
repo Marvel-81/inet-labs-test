@@ -41,6 +41,6 @@ class Lead extends Model
      */
     public function aiAnalyses(): HasMany
     {
-        return $this->hasMany(LeadAiAnalysis::class);
+        return $this->hasMany(LeadAiAnalyses::class);
     }
 }
