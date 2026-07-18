@@ -1,0 +1,699 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Лиды",
+        "description": "Документация API для работы с заявками.",
+        "contact": {
+            "email": "sd-programmer@yandex.ru"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080",
+            "description": "Сервер разработки"
+        }
+    ],
+    "paths": {
+        "/api/health": {
+            "get": {
+                "tags": [
+                    "Система"
+                ],
+                "summary": "Проверка работоспособности API и зависимостей",
+                "description": "Выполняет проверку подключения к БД, кэшу и выводит общую информацию о приложении.",
+                "operationId": "checkHealth",
+                "responses": {
+                    "200": {
+                        "description": "Сервис полностью работоспособен (All checks passed)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Application is healthy"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "ok"
+                                                },
+                                                "timestamp": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2026-07-18T10:25:07.363922Z"
+                                                },
+                                                "checks": {
+                                                    "properties": {
+                                                        "database": {
+                                                            "properties": {
+                                                                "status": {
+                                                                    "type": "string",
+                                                                    "example": "ok"
+                                                                },
+                                                                "message": {
+                                                                    "type": "string",
+                                                                    "example": "Database connection successful"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "cache": {
+                                                            "properties": {
+                                                                "status": {
+                                                                    "type": "string",
+                                                                    "example": "ok"
+                                                                },
+                                                                "message": {
+                                                                    "type": "string",
+                                                                    "example": "Cache connection successful"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "app": {
+                                                            "properties": {
+                                                                "status": {
+                                                                    "type": "string",
+                                                                    "example": "ok"
+                                                                },
+                                                                "environment": {
+                                                                    "type": "string",
+                                                                    "example": "local"
+                                                                },
+                                                                "debug": {
+                                                                    "type": "boolean",
+                                                                    "example": true
+                                                                },
+                                                                "timezone": {
+                                                                    "type": "string",
+                                                                    "example": "UTC"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Частичный сбой (Degraded mode). Одна из систем (БД или кэш) недоступна.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Application is degraded"
+                                        },
+                                        "error_code": {
+                                            "type": "string",
+                                            "example": "HEALTH_CHECK_FAILED"
+                                        },
+                                        "debug": {
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "degraded"
+                                                },
+                                                "timestamp": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2026-07-18T10:27:18.058190Z"
+                                                },
+                                                "checks": {
+                                                    "properties": {
+                                                        "database": {
+                                                            "properties": {
+                                                                "status": {
+                                                                    "type": "string",
+                                                                    "example": "error"
+                                                                },
+                                                                "message": {
+                                                                    "type": "string",
+                                                                    "example": "Database connection failed"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "cache": {
+                                                            "properties": {
+                                                                "status": {
+                                                                    "type": "string",
+                                                                    "example": "ok"
+                                                                },
+                                                                "message": {
+                                                                    "type": "string",
+                                                                    "example": "Cache connection successful"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "app": {
+                                                            "properties": {
+                                                                "status": {
+                                                                    "type": "string",
+                                                                    "example": "ok"
+                                                                },
+                                                                "environment": {
+                                                                    "type": "string",
+                                                                    "example": "local"
+                                                                },
+                                                                "debug": {
+                                                                    "type": "boolean",
+                                                                    "example": true
+                                                                },
+                                                                "timezone": {
+                                                                    "type": "string",
+                                                                    "example": "UTC"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Критическая ошибка выполнения health check",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/contact": {
+            "post": {
+                "tags": [
+                    "Лиды"
+                ],
+                "summary": "Создание нового лида",
+                "operationId": "createLead",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LeadRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Заявка успешно создана",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации входных данных",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/metrics": {
+            "get": {
+                "tags": [
+                    "Лиды"
+                ],
+                "summary": "Получение списка всех лидов с аналитикой",
+                "operationId": "getLeadsList",
+                "responses": {
+                    "200": {
+                        "description": "Список получен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LeadCollectionResource"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка получения списка",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "SuccessResponse": {
+                "required": [
+                    "success"
+                ],
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "data": {
+                        "type": "object",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ErrorResponse": {
+                "required": [
+                    "success"
+                ],
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "error_code": {
+                        "type": "string"
+                    },
+                    "debug": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationErrorResponse": {
+                "required": [
+                    "success",
+                    "message",
+                    "errors",
+                    "error_code"
+                ],
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Ошибка валидации данных"
+                    },
+                    "errors": {
+                        "type": "object",
+                        "example": {
+                            "email": [
+                                "Введите корректный email адрес."
+                            ],
+                            "name": [
+                                "Поле name обязательно для заполнения."
+                            ]
+                        },
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "VALIDATION_ERROR"
+                    }
+                },
+                "type": "object"
+            },
+            "LeadRequest": {
+                "required": [
+                    "name"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Иван Иванов",
+                        "maxLength": 255,
+                        "minLength": 2
+                    },
+                    "phone": {
+                        "type": "string",
+                        "pattern": "^\\+?[0-9\\s\\-()]+$",
+                        "nullable": true,
+                        "maxLength": 20
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "nullable": true,
+                        "maxLength": 255
+                    },
+                    "comment": {
+                        "type": "string",
+                        "nullable": true,
+                        "maxLength": 1000
+                    }
+                },
+                "type": "object"
+            },
+            "LeadResource": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 18
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Иван Иванов"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "+7 (999) 123-45-67",
+                        "nullable": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "ivan@example.com",
+                        "nullable": true
+                    },
+                    "comment": {
+                        "type": "string",
+                        "example": "Хочу заказать услугу",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "18.07.2026 06:23"
+                    },
+                    "ai_analysis": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/AiAnalysis"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "LeadCollectionResource": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/SuccessResponse"
+                    },
+                    {
+                        "properties": {
+                            "data": {
+                                "properties": {
+                                    "data": {
+                                        "type": "array",
+                                        "items": {
+                                            "$ref": "#/components/schemas/LeadResource"
+                                        },
+                                        "example": [
+                                            {
+                                                "id": 18,
+                                                "name": "Тест",
+                                                "phone": "+7 (999) 123-45-67",
+                                                "email": "test@yandex.ru",
+                                                "comment": "Тестовый комментарий",
+                                                "created_at": "18.07.2026 06:23",
+                                                "ai_analysis": [
+                                                    {
+                                                        "id": 6,
+                                                        "parameter": "Тональность",
+                                                        "decoded_value": "Тональность не проанализирована",
+                                                        "created_at": "18.07.2026 06:25"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    "meta": {
+                                        "properties": {
+                                            "total": {
+                                                "type": "integer",
+                                                "example": 18
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    }
+                ]
+            },
+            "AiAnalysis": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 6
+                    },
+                    "parameter": {
+                        "type": "string",
+                        "example": "Тональность"
+                    },
+                    "decoded_value": {
+                        "type": "string",
+                        "example": "Тональность не проанализирована"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "18.07.2026 06:25"
+                    }
+                },
+                "type": "object"
+            },
+            "HealthCheckResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Application is healthy"
+                    },
+                    "data": {
+                        "properties": {
+                            "status": {
+                                "type": "string",
+                                "example": "ok"
+                            },
+                            "timestamp": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2026-07-18T10:25:07.363922Z"
+                            },
+                            "checks": {
+                                "properties": {
+                                    "database": {
+                                        "properties": {
+                                            "status": {
+                                                "type": "string",
+                                                "example": "ok"
+                                            },
+                                            "message": {
+                                                "type": "string",
+                                                "example": "Database connection successful"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "cache": {
+                                        "properties": {
+                                            "status": {
+                                                "type": "string",
+                                                "example": "ok"
+                                            },
+                                            "message": {
+                                                "type": "string",
+                                                "example": "Cache connection successful"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "app": {
+                                        "properties": {
+                                            "status": {
+                                                "type": "string",
+                                                "example": "ok"
+                                            },
+                                            "environment": {
+                                                "type": "string",
+                                                "example": "local"
+                                            },
+                                            "debug": {
+                                                "type": "boolean",
+                                                "example": true
+                                            },
+                                            "timezone": {
+                                                "type": "string",
+                                                "example": "UTC"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "HealthCheckDegradedResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Application is degraded"
+                    },
+                    "error_code": {
+                        "type": "string",
+                        "example": "HEALTH_CHECK_FAILED"
+                    },
+                    "debug": {
+                        "properties": {
+                            "status": {
+                                "type": "string",
+                                "example": "degraded"
+                            },
+                            "timestamp": {
+                                "type": "string",
+                                "format": "date-time",
+                                "example": "2026-07-18T10:27:18.058190Z"
+                            },
+                            "checks": {
+                                "properties": {
+                                    "database": {
+                                        "properties": {
+                                            "status": {
+                                                "type": "string",
+                                                "example": "error"
+                                            },
+                                            "message": {
+                                                "type": "string",
+                                                "example": "Database connection failed"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "cache": {
+                                        "properties": {
+                                            "status": {
+                                                "type": "string",
+                                                "example": "ok"
+                                            },
+                                            "message": {
+                                                "type": "string",
+                                                "example": "Cache connection successful"
+                                            }
+                                        },
+                                        "type": "object"
+                                    },
+                                    "app": {
+                                        "properties": {
+                                            "status": {
+                                                "type": "string",
+                                                "example": "ok"
+                                            },
+                                            "environment": {
+                                                "type": "string",
+                                                "example": "local"
+                                            },
+                                            "debug": {
+                                                "type": "boolean",
+                                                "example": true
+                                            },
+                                            "timezone": {
+                                                "type": "string",
+                                                "example": "UTC"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Лиды",
+            "description": "Операции с заявками"
+        },
+        {
+            "name": "Система",
+            "description": "Системные операции"
+        }
+    ]
+}
