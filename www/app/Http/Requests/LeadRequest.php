@@ -59,27 +59,27 @@ class LeadRequest extends FormRequest
     {
         return [
             // Name
-            'name.required' => 'Поле "Имя" обязательно для заполнения.',
-            'name.string' => 'Поле "Имя" должно быть строкой.',
-            'name.max' => 'Поле "Имя" не может превышать 255 символов.',
-            'name.min' => 'Поле "Имя" должно содержать минимум 2 символа.',
-            'name.regex' => 'Поле "Имя" может содержать только буквы, пробелы и дефисы.',
+            'name.required' => __('messages.validation.name.required'),
+            'name.string' => __('messages.validation.name.string'),
+            'name.max' => __('messages.validation.name.max'),
+            'name.min' => __('messages.validation.name.min'),
+            'name.regex' => __('messages.validation.name.regex'),
 
             // Phone
-            'phone.string' => 'Поле "Телефон" должно быть строкой.',
-            'phone.max' => 'Поле "Телефон" не может превышать 20 символов.',
-            'phone.regex' => 'Неверный формат номера телефона.',
-            'phone.min' => 'Поле "Телефон" должно содержать минимум 7 символов.',
+            'phone.string' => __('messages.validation.phone.string'),
+            'phone.max' => __('messages.validation.phone.max'),
+            'phone.regex' => __('messages.validation.phone.regex'),
+            'phone.min' => __('messages.validation.phone.min'),
 
             // Email
-            'email.string' => 'Поле "Email" должно быть строкой.',
-            'email.email' => 'Введите корректный email адрес.',
-            'email.max' => 'Поле "Email" не может превышать 255 символов.',
+            'email.string' => __('messages.validation.email.string'),
+            'email.email' => __('messages.validation.email.email'),
+            'email.max' => __('messages.validation.email.max'),
 
             // Comment
-            'comment.string' => 'Поле "Комментарий" должно быть строкой.',
-            'comment.max' => 'Поле "Комментарий" не может превышать 1000 символов.',
-            'comment.min' => 'Поле "Комментарий" должно содержать минимум 3 символа.',
+            'comment.string' => __('messages.validation.comment.string'),
+            'comment.max' => __('messages.validation.comment.max'),
+            'comment.min' => __('messages.validation.comment.min'),
         ];
     }
 
@@ -103,10 +103,9 @@ class LeadRequest extends FormRequest
     {
         throw new HttpResponseException(response()->json([
             'success' => false,
-            'message' => 'Ошибка валидации данных',
+            'message' => __('messages.validation_error'),
             'errors' => $validator->errors(),
             'error_code' => 'VALIDATION_ERROR',
         ], 422));
     }
-
 }

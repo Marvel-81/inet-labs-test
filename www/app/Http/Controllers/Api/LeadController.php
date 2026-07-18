@@ -41,11 +41,11 @@ class LeadController extends Controller
             $data = $request->validated();
 
             $lead = $this->leadService->createLead($data);
-            $tone = $this->aiService->toneAnalyzer($data['comment']);
+            $tone = $this->aiService->toneAnalyzer($data['comment'] ?? '');
             $this->leadAIComment->createComment($lead->id, $tone);
 
             return (new SuccessResource([
-                'message' => 'Заявка успешно создана',
+                'message' => __('messages.lead.created'),
                 'data' => new LeadResource($lead),
             ]))->response()->setStatusCode(201);
 
@@ -56,7 +56,7 @@ class LeadController extends Controller
             ]);
 
             return (new ErrorResource([
-                'message' => 'Произошла ошибка при создании заявки',
+                'message' => __('messages.lead.creation_error'),
                 'error_code' => 'SERVER_ERROR',
                 'debug' => config('app.debug') ? $e->getMessage() : null,
             ]))->response()->setStatusCode(500);
@@ -73,11 +73,11 @@ class LeadController extends Controller
             $leads = $this->leadService->getAllLeadsWithAnalytics();
 
             if ($leads->isEmpty()) {
-                $message = 'Лиды не найдены';
+                $message = __('messages.lead.not_found');
             }
 
             return (new SuccessResource([
-                'message' => $message ?? 'Список лидов получен успешно',
+                'message' => $message ?? __('messages.lead.list_retrieved'),
                 'data' => new LeadCollectionResource($leads),
             ]))->response()->setStatusCode(200);
 
@@ -87,7 +87,7 @@ class LeadController extends Controller
             ]);
 
             return (new ErrorResource([
-                'message' => 'Ошибка получения списка лидов',
+                'message' => __('messages.lead.list_error'),
                 'error_code' => 'SERVER_ERROR',
                 'debug' => config('app.debug') ? $e->getMessage() : null,
             ]))->response()->setStatusCode(500);

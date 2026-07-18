@@ -27,7 +27,7 @@ class LeadCreatedNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage())
-            ->subject('Новый лид на сайте')
+            ->subject(__('messages.emails.new_lead.subject'))
             ->view('emails.admin.new-lead', [
                 'lead' => $this->lead,
             ]);

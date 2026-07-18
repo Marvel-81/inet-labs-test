@@ -14,7 +14,7 @@ class ErrorResource extends JsonResource
     {
         return [
             'success' => $this->resource['success'] ?? false,
-            'message' => $this->resource['message'] ?? 'Произошла ошибка',
+            'message' => $this->resource['message'] ?? __('messages.error'),
             'error_code' => $this->resource['error_code'] ?? 'SERVER_ERROR',
             'debug' => $this->resource['debug'] ?? null,
         ];

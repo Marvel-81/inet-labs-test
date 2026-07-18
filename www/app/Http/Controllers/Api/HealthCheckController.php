@@ -29,20 +29,20 @@ class HealthCheckController extends Controller
 
             if ($status['status'] === 'degraded') {
                 return (new ErrorResource([
-                    'message' => 'Application is degraded',
+                    'message' => __('messages.health.degraded'),
                     'error_code' => 'HEALTH_CHECK_FAILED',
                     'debug' => $status ?? '',
                 ]))->response()->setStatusCode(503);
             }
 
             return (new SuccessResource([
-                'message' => 'Application is healthy',
+                'message' => __('messages.health.healthy'),
                 'data' => $status,
             ]))->response()->setStatusCode(200);
 
         } catch (Throwable $e) {
             return (new ErrorResource([
-                'message' => 'Health check failed',
+                'message' => __('messages.health.error'),
                 'error_code' => 'HEALTH_CHECK_ERROR',
                 'debug' => config('app.debug') ? $e->getMessage() : null,
             ]))->response()->setStatusCode(500);

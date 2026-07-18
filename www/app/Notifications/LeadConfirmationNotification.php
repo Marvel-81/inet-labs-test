@@ -27,7 +27,7 @@ class LeadConfirmationNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage())
-            ->subject('Ваша заявка принята')
+            ->subject(__('messages.emails.lead_confirmation.subject'))
             ->view('emails.lead.confirmation', [
                 'lead' => $this->lead,
             ]);
