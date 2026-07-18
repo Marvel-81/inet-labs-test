@@ -16,7 +16,6 @@ class LeadAiAnalysisResource extends JsonResource
             'id' => $this->id,
             'parameter' => $this->parameter,
             'decoded_value' => $this->decoded_value,
-            'confidence' => $this->confidence,
             'created_at' => $this->created_at->format('d.m.Y H:i'),
         ];
     }
