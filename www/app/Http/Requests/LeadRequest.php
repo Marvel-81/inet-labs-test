@@ -75,7 +75,6 @@ class LeadRequest extends FormRequest
             'email.string' => 'Поле "Email" должно быть строкой.',
             'email.email' => 'Введите корректный email адрес.',
             'email.max' => 'Поле "Email" не может превышать 255 символов.',
-            'email.unique' => 'Этот email уже зарегистрирован в системе.',
 
             // Comment
             'comment.string' => 'Поле "Комментарий" должно быть строкой.',
