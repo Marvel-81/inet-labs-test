@@ -8,6 +8,7 @@ use App\Http\Resources\ErrorResource;
 use App\Http\Resources\LeadCollectionResource;
 use App\Http\Resources\LeadResource;
 use App\Http\Resources\SuccessResource;
+use App\Jobs\AnalyzeToneJob;
 use App\Services\AIService;
 use App\Services\LeadAICommentService;
 use App\Services\LeadService;
@@ -41,8 +42,9 @@ class LeadController extends Controller
             $data = $request->validated();
 
             $lead = $this->leadService->createLead($data);
-            $tone = $this->aiService->toneAnalyzer($data['comment'] ?? '');
-            $this->leadAIComment->createComment($lead->id, $tone);
+            AnalyzeToneJob::dispatch($lead->id, $data);
+            // $tone = $this->aiService->toneAnalyzer($data['comment'] ?? '');
+            // $this->leadAIComment->createComment($lead->id, $data);
 
             return (new SuccessResource([
                 'message' => __('messages.lead.created'),
