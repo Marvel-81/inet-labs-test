@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Interfaces\AIServiceInterface;
+use Exception;
+use Illuminate\Support\Facades\Log;
 
 class AIService
 {
@@ -20,7 +22,16 @@ class AIService
     public function toneAnalyzer(string $comment): array
     {
         $question = "Проанализируй тональность коментария";
-        $tone = $this->ai->ask($question.": \"$comment\"");
+        try {
+            $tone = $this->ai->ask($question.": \"$comment\"");
+        } catch (Exception $e) {
+
+            Log::error('AI tone analysis failed', [
+                'error_message' => $e->getMessage(),
+            ]);
+
+            $tone = "Тональность не проанализирована";
+        }
         return [
             'parameter' => 'Тональность',
             'value' => $tone ?? "Тональность не проанализирована"
